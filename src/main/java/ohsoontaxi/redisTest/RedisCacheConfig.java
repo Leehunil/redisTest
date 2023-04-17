@@ -14,7 +14,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
-@EnableCaching
+@EnableCaching //캐시를 사용하고 싶은 메서드에 붙힌다.
 @Configuration
 public class RedisCacheConfig {
 
@@ -22,14 +22,14 @@ public class RedisCacheConfig {
     @Primary
     public CacheManager redisCacheManager(RedisConnectionFactory cf) {
         RedisCacheConfiguration redisCacheConfiguration =
-                RedisCacheConfiguration.defaultCacheConfig()
-                        .serializeKeysWith(
+                RedisCacheConfiguration.defaultCacheConfig() //기본 RedisCacheConfiguration 객체를 생성한다.
+                        .serializeKeysWith( //key 직렬화
                                 RedisSerializationContext.SerializationPair.fromSerializer(
                                         new StringRedisSerializer()))
-                        .serializeValuesWith(
+                        .serializeValuesWith( //value 직렬화
                                 RedisSerializationContext.SerializationPair.fromSerializer(
                                         new GenericJackson2JsonRedisSerializer()))
-                        .entryTtl(Duration.ofHours(1L));
+                        .entryTtl(Duration.ofHours(1L)); //캐시 데이터 TTL값 설정
         return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(cf)
                 .cacheDefaults(redisCacheConfiguration)
                 .build();
